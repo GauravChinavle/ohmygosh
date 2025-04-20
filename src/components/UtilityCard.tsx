@@ -14,27 +14,30 @@ export function UtilityCard({ title, description, icon: Icon, className }: Utili
   return (
     <Card className={cn(
       "group relative overflow-hidden p-6 transition-all duration-300 ease-in-out",
-      "cursor-pointer bg-[#1A1F2C] border-[#2C2C2C] hover:border-[#4A4E5A]",
-      "hover:scale-[1.03] hover:bg-[#222831]", // Subtle scale and background change
-      "border border-opacity-20 hover:border-opacity-50", // Refined border effect
+      "cursor-pointer bg-[#121721] border-[#1E2530] hover:border-[#2C3645]",
+      "hover:scale-[1.02] hover:bg-[#1A2028]", // Subtle scale and background change
+      "border border-opacity-10 hover:border-opacity-30", // Minimal border effect
       "text-gray-300 hover:text-white",
-      "shadow-md hover:shadow-2xl", // Enhanced shadow for depth
-      "transition-all duration-300 ease-in-out", // Smooth transitions
-      "overflow-hidden rounded-xl", // Rounded corners
+      "shadow-sm hover:shadow-md", // Refined shadow
+      "rounded-lg", // Slightly softer corners
+      "transition-all duration-300 ease-in-out",
+      "flex flex-col justify-between", // Improved layout
       className
     )}>
-      <div className="mb-4 flex items-center justify-between">
-        <Icon className="h-8 w-8 text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
+      <div className="flex items-center justify-between mb-4">
+        <Icon className="h-6 w-6 text-blue-300 group-hover:text-blue-200 transition-colors duration-300 opacity-80 group-hover:opacity-100" />
         <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs text-gray-500 group-hover:text-gray-300">
-          Click to use
+          Use Tool
         </div>
       </div>
-      <h3 className="text-xl font-semibold mb-2 text-white/90 group-hover:text-white transition-colors duration-300">
-        {title}
-      </h3>
-      <p className="text-gray-500 group-hover:text-gray-300 transition-colors duration-300">
-        {description}
-      </p>
+      <div>
+        <h3 className="text-lg font-medium mb-2 text-white/90 group-hover:text-white transition-colors duration-300">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
+          {description}
+        </p>
+      </div>
     </Card>
   );
 }
