@@ -41,11 +41,11 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
 
   return (
     <ScrollArea className="h-[600px] w-full">
-      <div className="p-4 font-mono text-sm flex">
-        <div className="mr-4 text-gray-500 text-right min-w-[40px]">
+      <div className="grid grid-cols-[50px_1fr] font-mono text-sm">
+        <div className="text-right text-gray-500 pr-2 select-none">
           {/* Line number column */}
         </div>
-        <div className="flex-grow">
+        <div>
           <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
         </div>
       </div>
@@ -76,10 +76,10 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
   
   // Render line number and content
   const renderLine = (content: React.ReactNode) => (
-    <div className="flex">
-      <div className="mr-4 text-gray-500 text-right min-w-[40px]">{lineNumber}</div>
+    <div className="grid grid-cols-[50px_1fr]">
+      <div className="text-right text-gray-500 pr-2 select-none">{lineNumber}</div>
       <div 
-        className="flex-grow flex items-center" 
+        className="flex items-center" 
         style={{ paddingLeft: `${indentation}rem` }}
       >
         {keyPrefix}{content}
@@ -126,10 +126,10 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
     return (
       <div>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex">
-            <div className="mr-4 text-gray-500 text-right min-w-[40px]">{currentLineNumber++}</div>
+          <div className="grid grid-cols-[50px_1fr]">
+            <div className="text-right text-gray-500 pr-2 select-none">{currentLineNumber++}</div>
             <div 
-              className="flex-grow flex items-center" 
+              className="flex items-center" 
               style={{ paddingLeft: `${indentation}rem` }}
             >
               <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none mr-2">
@@ -159,10 +159,10 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
                 />
               ))}
             </div>
-            <div className="flex">
-              <div className="mr-4 text-gray-500 text-right min-w-[40px]">{currentLineNumber}</div>
+            <div className="grid grid-cols-[50px_1fr]">
+              <div className="text-right text-gray-500 pr-2 select-none">{currentLineNumber}</div>
               <div 
-                className="flex-grow" 
+                className="" 
                 style={{ paddingLeft: `${indentation}rem` }}
               >
                 {closeBracket}
