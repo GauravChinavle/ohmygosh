@@ -27,14 +27,16 @@ const UTILITY_CARDS = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-[#121212] text-gray-100">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-center mb-4 text-white/90">
-          Developer Data Utilities
-        </h1>
-        <p className="text-xl text-center text-gray-400 mb-12">
-          Powerful tools for data transformation and formatting
-        </p>
+    <div className="min-h-screen bg-[#121212] text-gray-100 py-16">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+            Developer Data Utilities
+          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Streamline your data transformation workflow with powerful, developer-friendly tools
+          </p>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {UTILITY_CARDS.map((card, index) => (
