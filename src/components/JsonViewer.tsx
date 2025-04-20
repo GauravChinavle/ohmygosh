@@ -83,7 +83,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
                 <Collapsible>
                   <div className="flex items-center space-x-1">
                     <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-                      {({ open }) => (
+                      {({ open }: { open: boolean }) => (
                         open ? (
                           <ChevronUp className="h-4 w-4" />
                         ) : (
@@ -96,7 +96,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
                   <CollapsibleContent>
                     {parsedLines
                       .slice(index + 1)
-                      .takeWhile(l => l.indent > line.indent)
+                      .filter(l => l.indent > line.indent)
                       .map(l => (
                         <div key={l.path} className="flex">
                           <span>{l.content}</span>
