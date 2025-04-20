@@ -82,7 +82,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
                 <Collapsible>
                   <div className="flex items-center space-x-1">
                     <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-                      <ChevronDownArrow />
+                      <ToggleArrow />
                     </CollapsibleTrigger>
                     <span>{line.content}</span>
                   </div>
@@ -108,18 +108,18 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
   );
 }
 
-const ChevronDownArrow = () => {
+const ToggleArrow = () => {
   return (
-    <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-      <span className="inline-block transition-transform">
-        {({ open }: { open: boolean }) => (
+    <span className="inline-block transition-transform">
+      <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
+        {open => (
           open ? (
             <ChevronUp className="h-3 w-3" />
           ) : (
             <ChevronDown className="h-3 w-3" />
           )
         )}
-      </span>
-    </CollapsibleTrigger>
+      </CollapsibleTrigger>
+    </span>
   );
 };
