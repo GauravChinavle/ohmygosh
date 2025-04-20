@@ -1,4 +1,3 @@
-
 import { useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -83,13 +82,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
                 <Collapsible>
                   <div className="flex items-center space-x-1">
                     <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-                      {({ open }: { open: boolean }) => (
-                        open ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )
-                      )}
+                      <ChevronDownArrow />
                     </CollapsibleTrigger>
                     <span>{line.content}</span>
                   </div>
@@ -114,3 +107,19 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
     </ScrollArea>
   );
 }
+
+const ChevronDownArrow = () => {
+  return (
+    <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
+      <span className="inline-block transition-transform">
+        {({ open }: { open: boolean }) => (
+          open ? (
+            <ChevronUp className="h-3 w-3" />
+          ) : (
+            <ChevronDown className="h-3 w-3" />
+          )
+        )}
+      </span>
+    </CollapsibleTrigger>
+  );
+};
