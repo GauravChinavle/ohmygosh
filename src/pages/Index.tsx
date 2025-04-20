@@ -1,4 +1,3 @@
-
 import { FileJson, FileCode, FileSpreadsheet, FileText } from "lucide-react";
 import { UtilityCard } from "@/components/UtilityCard";
 
@@ -7,6 +6,7 @@ const UTILITY_CARDS = [
     title: "JSON Beautifier",
     description: "Format and beautify your JSON data with proper indentation and structure",
     icon: FileJson,
+    route: "/json-beautifier"
   },
   {
     title: "XML Beautifier",
@@ -45,6 +45,7 @@ const Index = () => {
               title={card.title}
               description={card.description}
               icon={card.icon}
+              route={card.route}
             />
           ))}
         </div>
