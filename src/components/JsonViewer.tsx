@@ -41,8 +41,13 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
 
   return (
     <ScrollArea className="h-[600px] w-full">
-      <div className="p-4 font-mono text-sm">
-        <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
+      <div className="p-4 font-mono text-sm flex">
+        <div className="mr-4 text-gray-500 text-right min-w-[40px]">
+          {/* Line number column */}
+        </div>
+        <div className="flex-grow">
+          <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
+        </div>
       </div>
     </ScrollArea>
   );
@@ -69,50 +74,38 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
     <span>{formattedKey}: </span>
   ) : null;
   
+  // Render line number and content
+  const renderLine = (content: React.ReactNode) => (
+    <div className="flex">
+      <div className="mr-4 text-gray-500 text-right min-w-[40px]">{lineNumber}</div>
+      <div 
+        className="flex-grow flex items-center" 
+        style={{ paddingLeft: `${indentation}rem` }}
+      >
+        {keyPrefix}{content}
+      </div>
+    </div>
+  );
+  
   // Handle different types of values
   if (value === null) {
-    return (
-      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-        {keyPrefix}<span className="text-gray-500">null</span>
-      </div>
-    );
+    return renderLine(<span className="text-gray-500">null</span>);
   }
   
   if (typeof value === 'undefined') {
-    return (
-      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-        {keyPrefix}<span className="text-gray-500">undefined</span>
-      </div>
-    );
+    return renderLine(<span className="text-gray-500">undefined</span>);
   }
   
   if (typeof value === 'boolean') {
-    return (
-      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-        {keyPrefix}<span className="text-purple-400">{value.toString()}</span>
-      </div>
-    );
+    return renderLine(<span className="text-purple-400">{value.toString()}</span>);
   }
   
   if (typeof value === 'number') {
-    return (
-      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-        {keyPrefix}<span className="text-green-400">{value}</span>
-      </div>
-    );
+    return renderLine(<span className="text-green-400">{value}</span>);
   }
   
   if (typeof value === 'string') {
-    return (
-      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-        {keyPrefix}<span className="text-amber-400">"{value}"</span>
-      </div>
-    );
+    return renderLine(<span className="text-amber-400">"{value}"</span>);
   }
   
   // Handle arrays and objects
@@ -124,33 +117,33 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
     
     // If empty, render simple version
     if (isEmpty) {
-      return (
-        <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-          <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-          {keyPrefix}{openBracket}{closeBracket}
-        </div>
-      );
+      return renderLine(<>{openBracket}{closeBracket}</>);
     }
     
     let currentLineNumber = lineNumber;
     
     // Handle non-empty arrays and objects with collapsible content
     return (
-      <div style={{ paddingLeft: `${indentation}rem` }}>
+      <div>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-500 w-8 text-right mr-4">{currentLineNumber++}</span>
-            <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-              {isOpen ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </CollapsibleTrigger>
-            <span>
-              {keyPrefix}{openBracket}
-              {!isOpen && <span className="opacity-50"> ... {closeBracket}</span>}
-            </span>
+          <div className="flex">
+            <div className="mr-4 text-gray-500 text-right min-w-[40px]">{currentLineNumber++}</div>
+            <div 
+              className="flex-grow flex items-center" 
+              style={{ paddingLeft: `${indentation}rem` }}
+            >
+              <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none mr-2">
+                {isOpen ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </CollapsibleTrigger>
+              <span>
+                {keyPrefix}{openBracket}
+                {!isOpen && <span className="opacity-50"> ... {closeBracket}</span>}
+              </span>
+            </div>
           </div>
           
           <CollapsibleContent>
@@ -166,9 +159,14 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
                 />
               ))}
             </div>
-            <div className="flex items-center gap-2" style={{ paddingLeft: 0 }}>
-              <span className="text-gray-500 w-8 text-right mr-4">{currentLineNumber}</span>
-              {closeBracket}
+            <div className="flex">
+              <div className="mr-4 text-gray-500 text-right min-w-[40px]">{currentLineNumber}</div>
+              <div 
+                className="flex-grow" 
+                style={{ paddingLeft: `${indentation}rem` }}
+              >
+                {closeBracket}
+              </div>
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -177,11 +175,7 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
   }
   
   // Fallback for unknown types
-  return (
-    <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
-      <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
-      {keyPrefix}<span>{String(value)}</span>
-    </div>
-  );
+  return renderLine(<span>{String(value)}</span>);
 }
 
+export default JsonViewer;
