@@ -6,7 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface JsonViewerProps {
   jsonString: string;
@@ -42,7 +42,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
   return (
     <ScrollArea className="h-[600px] w-full">
       <div className="p-4 font-mono text-sm">
-        <JsonNode value={parsedJson} depth={0} path="root" />
+        <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
       </div>
     </ScrollArea>
   );
@@ -53,9 +53,10 @@ interface JsonNodeProps {
   depth: number;
   path: string;
   keyName?: string;
+  lineNumber: number;
 }
 
-function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
+function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
   const [isOpen, setIsOpen] = useState(true);
   const indentation = depth * 1.5;
   
@@ -71,7 +72,8 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   // Handle different types of values
   if (value === null) {
     return (
-      <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
         {keyPrefix}<span className="text-gray-500">null</span>
       </div>
     );
@@ -79,7 +81,8 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   
   if (typeof value === 'undefined') {
     return (
-      <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
         {keyPrefix}<span className="text-gray-500">undefined</span>
       </div>
     );
@@ -87,7 +90,8 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   
   if (typeof value === 'boolean') {
     return (
-      <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
         {keyPrefix}<span className="text-purple-400">{value.toString()}</span>
       </div>
     );
@@ -95,7 +99,8 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   
   if (typeof value === 'number') {
     return (
-      <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
         {keyPrefix}<span className="text-green-400">{value}</span>
       </div>
     );
@@ -103,7 +108,8 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   
   if (typeof value === 'string') {
     return (
-      <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+      <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+        <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
         {keyPrefix}<span className="text-amber-400">"{value}"</span>
       </div>
     );
@@ -119,19 +125,27 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
     // If empty, render simple version
     if (isEmpty) {
       return (
-        <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+        <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+          <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
           {keyPrefix}{openBracket}{closeBracket}
         </div>
       );
     }
     
+    let currentLineNumber = lineNumber;
+    
     // Handle non-empty arrays and objects with collapsible content
     return (
       <div style={{ paddingLeft: `${indentation}rem` }}>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center">
-            <CollapsibleTrigger className="mr-1 hover:text-blue-400 focus-visible:outline-none">
-              {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 w-8 text-right mr-4">{currentLineNumber++}</span>
+            <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
+              {isOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
             </CollapsibleTrigger>
             <span>
               {keyPrefix}{openBracket}
@@ -147,11 +161,13 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
                   value={v} 
                   depth={depth + 1} 
                   path={`${path}-${k}`} 
-                  keyName={isArray ? undefined : k} 
+                  keyName={isArray ? undefined : k}
+                  lineNumber={currentLineNumber++}
                 />
               ))}
             </div>
-            <div style={{ paddingLeft: 0 }}>
+            <div className="flex items-center gap-2" style={{ paddingLeft: 0 }}>
+              <span className="text-gray-500 w-8 text-right mr-4">{currentLineNumber}</span>
               {closeBracket}
             </div>
           </CollapsibleContent>
@@ -162,8 +178,10 @@ function JsonNode({ value, depth, path, keyName }: JsonNodeProps) {
   
   // Fallback for unknown types
   return (
-    <div className="line flex" style={{ paddingLeft: `${indentation}rem` }}>
+    <div className="line flex items-center gap-2" style={{ paddingLeft: `${indentation}rem` }}>
+      <span className="text-gray-500 w-8 text-right mr-4">{lineNumber}</span>
       {keyPrefix}<span>{String(value)}</span>
     </div>
   );
 }
+
