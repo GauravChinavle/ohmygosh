@@ -1,5 +1,5 @@
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Collapsible,
@@ -70,49 +70,148 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
   return (
     <ScrollArea className="h-[600px] w-full">
       <div className="p-4 font-mono text-sm relative">
-        {parsedLines.map((line, index) => (
-          <div key={line.path} className="flex group">
-            <div className="w-12 text-right pr-4 text-gray-500 select-none">
-              {line.lineNumber}
-            </div>
-            <div 
-              className="flex-1"
-              style={{ paddingLeft: `${line.indent * 1.5}rem` }}
-            >
-              {line.isOpenBracket ? (
-                <Collapsible>
-                  <div className="flex items-center space-x-1">
-                    <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-                      <ToggleArrow />
-                    </CollapsibleTrigger>
-                    <span>{line.content}</span>
-                  </div>
-                  <CollapsibleContent>
-                    {parsedLines
-                      .slice(index + 1)
-                      .filter(l => l.indent > line.indent)
-                      .map(l => (
-                        <div key={l.path} className="flex">
-                          <span>{l.content}</span>
-                        </div>
-                      ))}
-                  </CollapsibleContent>
-                </Collapsible>
-              ) : (
-                <span>{line.content}</span>
-              )}
-            </div>
-          </div>
-        ))}
+        <JsonLines lines={parsedLines} />
       </div>
     </ScrollArea>
   );
 }
 
-const ToggleArrow = () => {
+interface JsonLinesProps {
+  lines: ParsedLine[];
+}
+
+const JsonLines = ({ lines }: JsonLinesProps) => {
+  if (!lines.length) return null;
+  
   return (
-    <span className="inline-block transition-transform">
-      <ChevronDown className="h-3 w-3" />
-    </span>
+    <>
+      {lines.map((line, index) => (
+        <JsonLine 
+          key={line.path} 
+          line={line} 
+          index={index} 
+          allLines={lines} 
+        />
+      ))}
+    </>
+  );
+};
+
+interface JsonLineProps {
+  line: ParsedLine;
+  index: number;
+  allLines: ParsedLine[];
+}
+
+const JsonLine = ({ line, index, allLines }: JsonLineProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+  
+  // Only process open brackets (objects and arrays)
+  if (!line.isOpenBracket) {
+    return (
+      <div className="flex group">
+        <div className="w-12 text-right pr-4 text-gray-500 select-none">
+          {line.lineNumber}
+        </div>
+        <div className="flex-1" style={{ paddingLeft: `${line.indent * 1.5}rem` }}>
+          <span>{line.content}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Find the matching closing bracket
+  const findClosingBracketIndex = () => {
+    let openBrackets = 1;
+    let i = index + 1;
+    
+    while (i < allLines.length && openBrackets > 0) {
+      const currentLine = allLines[i];
+      if (currentLine.isOpenBracket) openBrackets++;
+      if (currentLine.isCloseBracket) openBrackets--;
+      
+      if (openBrackets === 0) return i;
+      i++;
+    }
+    
+    return -1;
+  };
+  
+  const closingIndex = findClosingBracketIndex();
+  
+  // Get all child lines between opening and closing brackets
+  const childLines = closingIndex !== -1 
+    ? allLines.slice(index + 1, closingIndex)
+    : [];
+
+  // Show closing bracket only if its children are visible (when expanded)
+  const closingBracket = closingIndex !== -1 ? allLines[closingIndex] : null;
+  
+  return (
+    <>
+      <div className="flex group">
+        <div className="w-12 text-right pr-4 text-gray-500 select-none">
+          {line.lineNumber}
+        </div>
+        <div 
+          className="flex-1"
+          style={{ paddingLeft: `${line.indent * 1.5}rem` }}
+        >
+          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <div className="flex items-center space-x-1">
+              <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
+                <span className="inline-block transition-transform">
+                  {isOpen ? (
+                    <ChevronUp className="h-3 w-3" />
+                  ) : (
+                    <ChevronDown className="h-3 w-3" />
+                  )}
+                </span>
+              </CollapsibleTrigger>
+              <span>{line.content}</span>
+            </div>
+            <CollapsibleContent>
+              {childLines.map(child => (
+                <div 
+                  key={child.path} 
+                  className="flex group"
+                >
+                  <div className="w-12 text-right pr-4 text-gray-500 select-none">
+                    {child.lineNumber}
+                  </div>
+                  <div 
+                    className="flex-1"
+                    style={{ paddingLeft: `${child.indent * 1.5}rem` }}
+                  >
+                    {child.isOpenBracket ? (
+                      <JsonLine 
+                        line={child} 
+                        index={allLines.indexOf(child)} 
+                        allLines={allLines} 
+                      />
+                    ) : (
+                      <span>{child.content}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </div>
+      {closingBracket && !isOpen && (
+        <div className="flex group">
+          <div className="w-12 text-right pr-4 text-gray-500 select-none">
+            {closingBracket.lineNumber}
+          </div>
+          <div 
+            className="flex-1"
+            style={{ paddingLeft: `${closingBracket.indent * 1.5}rem` }}
+          >
+            <span>{closingBracket.content}</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
