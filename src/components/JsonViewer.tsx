@@ -1,3 +1,4 @@
+
 import { useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -111,15 +112,7 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
 const ToggleArrow = () => {
   return (
     <span className="inline-block transition-transform">
-      <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none">
-        {open => (
-          open ? (
-            <ChevronUp className="h-3 w-3" />
-          ) : (
-            <ChevronDown className="h-3 w-3" />
-          )
-        )}
-      </CollapsibleTrigger>
+      <ChevronDown className="h-3 w-3" />
     </span>
   );
 };
