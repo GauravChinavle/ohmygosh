@@ -27,13 +27,13 @@ const UTILITY_CARDS = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#121212] text-gray-100">
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-center mb-4 text-gray-900">
-          Data Formatting Utilities
+        <h1 className="text-4xl font-bold text-center mb-4 text-white/90">
+          Developer Data Utilities
         </h1>
-        <p className="text-xl text-center text-gray-600 mb-12">
-          Simple and powerful tools for your data transformation needs
+        <p className="text-xl text-center text-gray-400 mb-12">
+          Powerful tools for data transformation and formatting
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
