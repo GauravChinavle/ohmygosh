@@ -45,10 +45,8 @@ export function JsonViewer({ jsonString, error }: JsonViewerProps) {
         <div className="absolute left-0 top-0 bottom-0 w-[50px] border-r border-[#2C3645] bg-[#1A1F2C]">
           {/* Line number column background */}
         </div>
-        <div className="grid grid-cols-[50px_1fr]">
-          <div className="relative z-10">
-            <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
-          </div>
+        <div className="grid">
+          <JsonNode value={parsedJson} depth={0} path="root" lineNumber={1} />
         </div>
       </div>
     </ScrollArea>
@@ -77,9 +75,25 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
   ) : null;
   
   // Render line number and content
-  const renderLine = (content: React.ReactNode) => (
-    <div className="grid grid-cols-[50px_1fr] hover:bg-[#1E2530]">
-      <div className="text-right pr-4 text-[#4B5563] select-none">{lineNumber}</div>
+  const renderLine = (content: React.ReactNode, showArrow = false, toggleOpen?: () => void) => (
+    <div className="grid grid-cols-[50px_1fr] hover:bg-[#1E2530] group">
+      <div className="text-right pr-1 text-[#4B5563] select-none relative">
+        {lineNumber}
+        {showArrow && (
+          <div className="absolute right-[-12px] top-1/2 -translate-y-1/2">
+            <button 
+              onClick={toggleOpen} 
+              className="hover:text-blue-400 focus-visible:outline-none opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              {isOpen ? (
+                <ChevronDown className="h-3 w-3" />
+              ) : (
+                <ChevronRight className="h-3 w-3" />
+              )}
+            </button>
+          </div>
+        )}
+      </div>
       <div 
         className="flex items-center" 
         style={{ paddingLeft: `${indentation}rem` }}
@@ -124,45 +138,39 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
     
     let currentLineNumber = lineNumber;
     
-    // Handle non-empty arrays and objects with collapsible content
+    const toggleOpen = () => setIsOpen(!isOpen);
+    
+    // Handle non-empty arrays and objects
     return (
       <div>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="grid grid-cols-[50px_1fr] hover:bg-[#1E2530] group">
-            <div className="text-right pr-4 text-[#4B5563] select-none">{currentLineNumber++}</div>
-            <div 
-              className="flex items-center" 
-              style={{ paddingLeft: `${indentation}rem` }}
-            >
-              <CollapsibleTrigger className="hover:text-blue-400 focus-visible:outline-none mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                {isOpen ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </CollapsibleTrigger>
-              <span className="text-white">
-                {keyPrefix}{openBracket}
-                {!isOpen && <span className="opacity-50"> ... {closeBracket}</span>}
-              </span>
-            </div>
-          </div>
-          
-          <CollapsibleContent>
+        {renderLine(
+          <span className="text-white">
+            {openBracket}
+            {!isOpen && <span className="opacity-50"> ... {closeBracket}</span>}
+          </span>,
+          true,
+          toggleOpen
+        )}
+        
+        {isOpen && (
+          <>
             <div>
-              {Object.entries(value).map(([k, v], index) => (
-                <JsonNode 
-                  key={`${path}-${k}`} 
-                  value={v} 
-                  depth={depth + 1} 
-                  path={`${path}-${k}`} 
-                  keyName={isArray ? undefined : k}
-                  lineNumber={currentLineNumber++}
-                />
-              ))}
+              {Object.entries(value).map(([k, v], index) => {
+                currentLineNumber++;
+                return (
+                  <JsonNode 
+                    key={`${path}-${k}`} 
+                    value={v} 
+                    depth={depth + 1} 
+                    path={`${path}-${k}`} 
+                    keyName={isArray ? undefined : k}
+                    lineNumber={currentLineNumber}
+                  />
+                );
+              })}
             </div>
             <div className="grid grid-cols-[50px_1fr] hover:bg-[#1E2530]">
-              <div className="text-right pr-4 text-[#4B5563] select-none">{currentLineNumber}</div>
+              <div className="text-right pr-4 text-[#4B5563] select-none">{currentLineNumber + 1}</div>
               <div 
                 className="text-white" 
                 style={{ paddingLeft: `${indentation}rem` }}
@@ -170,8 +178,8 @@ function JsonNode({ value, depth, path, keyName, lineNumber }: JsonNodeProps) {
                 {closeBracket}
               </div>
             </div>
-          </CollapsibleContent>
-        </Collapsible>
+          </>
+        )}
       </div>
     );
   }
