@@ -1,4 +1,5 @@
-import { FileJson, FileCode, FileSpreadsheet, FileText } from "lucide-react";
+
+import { FileJson, FileCode, FileText, RefreshCw } from "lucide-react";
 import { UtilityCard } from "@/components/UtilityCard";
 
 const UTILITY_CARDS = [
@@ -12,16 +13,19 @@ const UTILITY_CARDS = [
     title: "XML Beautifier",
     description: "Clean and format XML documents for better readability",
     icon: FileCode,
+    route: "/xml-beautifier"
   },
   {
     title: "JSON to CSV",
     description: "Convert your JSON data into CSV format easily",
     icon: FileText,
+    route: "/json-to-csv"
   },
   {
-    title: "CSV to Excel",
-    description: "Transform CSV files into Excel spreadsheets",
-    icon: FileSpreadsheet,
+    title: "CSV to JSON",
+    description: "Transform CSV files into JSON format",
+    icon: RefreshCw,
+    route: "/csv-to-json"
   },
 ];
 
