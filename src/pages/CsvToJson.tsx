@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -138,8 +137,8 @@ const CsvToJson = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-medium text-blue-300">Output JSON</h2>
-                  <div className="flex items-center gap-4">
-                    <div className="flex bg-[#1A1F2C] border border-[#2C3645] rounded p-1">
+                  <div className="flex items-center gap-2">
+                    <div className="flex bg-[#1A1F2C] border border-[#2C3645] rounded p-1 mr-2">
                       <button
                         className={`px-3 py-1 rounded ${viewMode === 'text' ? 'bg-blue-900/50 text-blue-300' : 'text-gray-400'}`}
                         onClick={() => setViewMode("text")}
@@ -155,28 +154,26 @@ const CsvToJson = () => {
                       </button>
                     </div>
                     
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCopy}
-                        disabled={!jsonOutput}
-                        className="border-blue-800 hover:bg-blue-900/20"
-                      >
-                        <Copy className="h-4 w-4 mr-1" />
-                        Copy
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleDownload}
-                        disabled={!jsonOutput}
-                        className="border-blue-800 hover:bg-blue-900/20"
-                      >
-                        <FileDown className="h-4 w-4 mr-1" />
-                        Download
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopy}
+                      disabled={!jsonOutput}
+                      className="border-blue-800 hover:bg-blue-900/20"
+                    >
+                      <Copy className="h-4 w-4 mr-1" />
+                      Copy
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownload}
+                      disabled={!jsonOutput}
+                      className="border-blue-800 hover:bg-blue-900/20"
+                    >
+                      <FileDown className="h-4 w-4 mr-1" />
+                      Download
+                    </Button>
                   </div>
                 </div>
                 

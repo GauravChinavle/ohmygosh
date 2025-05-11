@@ -142,22 +142,20 @@ function XmlLine({ line, lineNumber }: XmlLineProps) {
   
   return (
     <div className="grid grid-cols-[50px_1fr] hover:bg-[#1E2530] group">
-      <div className="text-right pr-1 text-[#4B5563] select-none relative">
-        {lineNumber}
+      <div className="text-right pr-4 text-[#4B5563] select-none flex items-center justify-end relative">
         {isOpeningTag && (
-          <div className="absolute right-[-12px] top-1/2 -translate-y-1/2">
-            <button 
-              onClick={toggleOpen}
-              className="hover:text-blue-400 focus-visible:outline-none opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              {isOpen ? (
-                <ChevronDown className="h-3 w-3" />
-              ) : (
-                <ChevronRight className="h-3 w-3" />
-              )}
-            </button>
-          </div>
+          <button 
+            onClick={toggleOpen}
+            className="hover:text-blue-400 focus-visible:outline-none opacity-0 group-hover:opacity-100 transition-opacity absolute left-2"
+          >
+            {isOpen ? (
+              <ChevronDown className="h-3 w-3" />
+            ) : (
+              <ChevronRight className="h-3 w-3" />
+            )}
+          </button>
         )}
+        <span>{lineNumber}</span>
       </div>
       <div 
         className="flex items-center" 
